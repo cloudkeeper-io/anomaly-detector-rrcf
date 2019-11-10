@@ -1,0 +1,26 @@
+service: anomaly-detector-rrcf
+
+provider:
+  name: aws
+  runtime: python3.6
+  region: eu-central-1
+
+custom:
+  name: ${self:custom.stage}-${self:service}
+  stage: ${opt:stage, self:provider.stage}
+  pythonRequirements:
+    dockerizePip: non-linux
+
+functions:
+  detect:
+    name: ${self:custom.name}-detect
+    handler: handler.detect
+    memorySize: 512
+    timeout: 300
+
+  batch-detect:
+    name: ${self:custom.name}-batch-detect
+    handler: handler.batch_detect
+
+plugins:
+  - serverless-python-requirements
